@@ -1,0 +1,17 @@
+CHIP PC {
+    IN in[16], load, inc, reset;
+    OUT out[16];
+
+    PARTS:
+    Inc16(in=current, out=incremented);
+
+    Mux16(a=current, b=incremented, sel=inc, out=incResult);
+    Mux16(a=incResult, b=in, sel=load, out=loadResult);
+    Mux16(a=loadResult, b=false, sel=reset, out=next);
+
+    Register(in=next, load=true, out=current);
+    // current is the internal output of the register
+    // Connect it to the chip's output
+    // This is not allowed directly, so use:
+    Or16(a=current, b=false, out=out);
+}
